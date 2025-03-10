@@ -2,21 +2,21 @@
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
   <Id>8a28484c-6e8a-4a5d-bb21-869bb7ff2824</Id>
   <Version>1.0.0.0</Version>
-  <ProviderName>Contoso</ProviderName>
+  <ProviderName>Tao-Mei</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="GPT-to-Word-Plugin"/>
-  <Description DefaultValue="A template to get started."/>
-  <IconUrl DefaultValue="https://localhost:3000/assets/icon-32.png"/>
-  <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon-64.png"/>
-  <SupportUrl DefaultValue="https://www.contoso.com/help"/>
+  <Description DefaultValue="基于 Markdown 转换的 Word 插件"/>
+  <IconUrl DefaultValue="https://tao-mei.github.io/GPT-to-Word-Plugin/assets/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="https://tao-mei.github.io/GPT-to-Word-Plugin/assets/icon-64.png"/>
+  <SupportUrl DefaultValue="https://tao-mei.github.io/GPT-to-Word-Plugin/help"/>
   <AppDomains>
-    <AppDomain>https://www.contoso.com</AppDomain>
+    <AppDomain>https://tao-mei.github.io</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Document"/>
   </Hosts>
   <DefaultSettings>
-    <SourceLocation DefaultValue="https://Tao-Mei.github.io/GPT-to-Word-Plugin/index.html"/>
+    <SourceLocation DefaultValue="https://tao-mei.github.io/GPT-to-Word-Plugin/src/taskpane/taskpane.html"/>
   </DefaultSettings>
   <Permissions>ReadWriteDocument</Permissions>
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
@@ -62,23 +62,23 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://localhost:3000/assets/icon-16.png"/>
-        <bt:Image id="Icon.32x32" DefaultValue="https://localhost:3000/assets/icon-32.png"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://localhost:3000/assets/icon-80.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://tao-mei.github.io/GPT-to-Word-Plugin/assets/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://tao-mei.github.io/GPT-to-Word-Plugin/assets/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://tao-mei.github.io/GPT-to-Word-Plugin/assets/icon-80.png"/>
       </bt:Images>
       <bt:Urls>
         <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://go.microsoft.com/fwlink/?LinkId=276812"/>
-        <bt:Url id="Commands.Url" DefaultValue="https://localhost:3000/commands.html"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/taskpane.html"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://tao-mei.github.io/GPT-to-Word-Plugin/src/commands/commands.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://tao-mei.github.io/GPT-to-Word-Plugin/src/taskpane/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GetStarted.Title" DefaultValue="Get started with your sample add-in!"/>
-        <bt:String id="CommandsGroup.Label" DefaultValue="Commands Group"/>
-        <bt:String id="TaskpaneButton.Label" DefaultValue="Show Task Pane"/>
+        <bt:String id="GetStarted.Title" DefaultValue="开始使用 GPT-to-Word-Plugin"/>
+        <bt:String id="CommandsGroup.Label" DefaultValue="GPT 插件命令"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="打开任务面板"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="GetStarted.Description" DefaultValue="Your sample add-in loaded successfully. Go to the HOME tab and click the 'Show Task Pane' button to get started."/>
-        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Click to Show a Taskpane"/>
+        <bt:String id="GetStarted.Description" DefaultValue="GPT-to-Word 插件已成功加载，点击 '打开任务面板' 按钮开始使用。"/>
+        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="点击打开任务面板"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
