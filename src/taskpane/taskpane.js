@@ -46,12 +46,11 @@ async function convertMarkdownToWord() {
 /**
  * 递归处理节点（支持：<h1/h2/h3>, <ul/ol>, <table>, <p> 等常见块级元素）
  */
-async function processNode(node, body, context) {
+async function processNode(node, body, context, level = 0) {
   // 如果是文本节点（多半是空白），可直接忽略
   if (node.nodeType === Node.TEXT_NODE) {
     const text = node.textContent.trim();
     if (text) {
-      // 如果你想把裸文本也插入，可以在这里处理
       body.insertParagraph(text, Word.InsertLocation.end);
     }
     return;
@@ -79,37 +78,35 @@ async function processNode(node, body, context) {
 
     // 2) 处理列表 <ul> / <ol>
     if (tagName === "ul" || tagName === "ol") {
-      // 逐个处理 <li>
-      const items = node.querySelectorAll("li");
+      let isOrdered = tagName === "ol";
+      let bulletChar = isOrdered ? "1." : "•";
+
+      let items = Array.from(node.children).filter(li => li.nodeName.toLowerCase() === "li");
       if (items.length === 0) return;
 
-      if (tagName === "ul") {
-        // 无序列表
-        let bullet = "• "; // 简单符号
-        for (let li of items) {
-          const text = li.textContent.trim();
-          const paragraph = body.insertParagraph(bullet + text, Word.InsertLocation.end);
-          paragraph.styleBuiltIn = Word.Style.listParagraph;
+      for (let i = 0; i < items.length; i++) {
+        let li = items[i];
+        let text = li.firstChild?.textContent.trim() || "";
+
+        let listPrefix = isOrdered ? `${i + 1}.` : bulletChar;
+
+        let paragraph = body.insertParagraph(" ".repeat(level * 4) + listPrefix + " " + text, Word.InsertLocation.end);
+        paragraph.styleBuiltIn = Word.Style.listParagraph;
+
+        // 递归处理嵌套列表
+        let nestedList = li.querySelector("ul, ol");
+        if (nestedList) {
+          await processNode(nestedList, body, context, level + 1);
         }
-      } else {
-        // 有序列表
-        // 这里简单处理 1. 2. 3. … 
-        const itemsArr = Array.from(items);
-        itemsArr.forEach((li, idx) => {
-          const text = li.textContent.trim();
-          const paragraph = body.insertParagraph(`${idx + 1}. ${text}`, Word.InsertLocation.end);
-          paragraph.styleBuiltIn = Word.Style.listParagraph;
-        });
       }
       return;
     }
 
     // 3) 处理表格 <table>
     if (tagName === "table") {
-      // 将表格解析为二维数组
       const tableData = parseHTMLTable(node);
       if (tableData) {
-        insertWordTable(body, tableData);
+        insertWordTable(body, tableData, context);
       }
       return;
     }
@@ -124,16 +121,15 @@ async function processNode(node, body, context) {
       return;
     }
 
-    // 5) 如果是其他容器，如 <div>、<section> 等，则继续递归其子节点
+    // 5) 递归处理 <div>, <section> 等容器
     if (["div", "section", "article"].includes(tagName)) {
       for (let child of node.childNodes) {
-        await processNode(child, body, context);
+        await processNode(child, body, context, level);
       }
       return;
     }
 
-    // 6) 如果遇到不常见的块级元素（blockquote/code/pre 等），
-    //    简化处理：插入其 textContent
+    // 6) 其他未知情况，直接插入 textContent
     const fallbackText = node.textContent.trim();
     if (fallbackText) {
       body.insertParagraph(fallbackText, Word.InsertLocation.end);
@@ -174,10 +170,11 @@ function parseHTMLTable(tableElem) {
 }
 
 /**
- * 将二维数组插入为 Word 原生表格
+ * 将二维数组插入为 Word 原生表格，并优化表格样式
+ * 现在增加 context 参数，确保可以加载表格内容
  */
-function insertWordTable(body, tableData) {
-  // 确保单元格不为空
+async function insertWordTable(body, tableData, context) {
+  // 确保每个单元格不为空
   for (let r = 0; r < tableData.length; r++) {
     for (let c = 0; c < tableData[r].length; c++) {
       if (!tableData[r][c]) {
@@ -189,16 +186,42 @@ function insertWordTable(body, tableData) {
   const cols = tableData[0].length;
   console.log(`Inserting table with ${rows} rows and ${cols} columns`);
 
+  // 插入表格
   const table = body.insertTable(rows, cols, Word.InsertLocation.end, tableData);
-  table.styleBuiltIn = Word.Style.tableGrid; // 细线表格
+  table.styleBuiltIn = Word.Style.tableGrid; // 使用细线表格
 
-  // 设置表格边框
+  // 加载表格相关属性
+  context.load(table, "rows/items/cells/items");
+  await context.sync();
+
+  // 为第一行（表头）逐个单元格添加灰色背景
+  if (table.rows.items.length > 0) {
+    let headerRow = table.rows.items[0];
+    headerRow.cells.items.forEach(cell => {
+      if (cell && cell.shading) {
+        cell.shading.backgroundColor = "F2F2F2";
+      }
+    });
+  }
+
+  // 设置表格前后空行：先获取范围并判断 paragraphFormat 是否存在
+  let range = table.getRange();
+  if (range && range.paragraphFormat) {
+    range.paragraphFormat.spaceBefore = 0;
+    range.paragraphFormat.spaceAfter = 0;
+  } else {
+    console.warn("table.getRange().paragraphFormat is undefined, skipping space adjustments.");
+  }
+
+  // 设置表格边框颜色
   table.getBorder(Word.BorderType.insideHorizontal).color = "#000000";
   table.getBorder(Word.BorderType.insideVertical).color = "#000000";
   table.getBorder(Word.BorderType.top).color = "#000000";
   table.getBorder(Word.BorderType.bottom).color = "#000000";
   table.getBorder(Word.BorderType.left).color = "#000000";
   table.getBorder(Word.BorderType.right).color = "#000000";
+
+  await context.sync();
 }
 
 /**
