@@ -23,12 +23,14 @@
     </header>
 
     <section id="sideload-msg" class="ms-welcome__main">
-        <h2 class="ms-font-xl">Please <a href="https://learn.microsoft.com/office/dev/add-ins/testing/test-debug-office-add-ins#sideload-an-office-add-in-for-testing" target="_blank" rel="noopener noreferrer">
-            sideload</a> your add-in to see app body.
+        <h2 class="ms-font-xl">
+            Please <a href="https://learn.microsoft.com/office/dev/add-ins/testing/test-debug-office-add-ins#sideload-an-office-add-in-for-testing"
+                     target="_blank" rel="noopener noreferrer">
+                sideload</a> your add-in to see app body.
         </h2>
     </section>
 
-    <main id="app-body" class="ms-welcome__main hidden">
+    <main id="app-body" class="ms-welcome__main" style="display: none;">
         <h2 class="ms-font-xl"> Discover what Office Add-ins can do for you today! </h2>
         <ul class="ms-List ms-welcome__features">
             <li class="ms-ListItem">
@@ -57,6 +59,12 @@
         <div role="button" id="convertToWord" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
             <span class="ms-Button-label">Convert to Word</span>
         </div>
+
+        <!-- 新增的调试日志区域 -->
+        <h3>Debug Logs</h3>
+        <textarea id="debugArea" rows="8" cols="50"
+                  placeholder="调试日志将在这里显示..."
+                  style="width: 100%;"></textarea>
     </main>
 </body>
 
