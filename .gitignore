@@ -1,1 +1,21 @@
-node_modules
+# 忽略 Node.js 依赖文件夹
+node_modules/
+
+# 忽略日志文件
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 忽略 VS Code 个人配置
+.vscode/
+
+# 忽略 Windows 自动生成的文件
+Thumbs.db
+ehthumbs.db
+*.lnk
+.DS_Store
+
+# 忽略编译输出（如果有）
+dist/
+build/
+*.log
